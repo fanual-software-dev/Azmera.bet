@@ -85,5 +85,6 @@ Backend (/backend/.env)
 
 👨‍💻 Author
 
-Azmera Bet Team
-Developed by passionate engineers using modern web technologies.
+Fanual Asfaw
+
+- A passionate solo developer of Azmera betting site using modern web technologies.
