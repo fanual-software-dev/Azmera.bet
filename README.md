@@ -39,22 +39,24 @@ azmera-bet/
 
 3. Backend setup
 
-cd backend
-npm install
-npm run start:dev
+- cd backend
+- npm install
+- npm run start:dev
 
 
 🔑 Environment Variables
 
 Frontend (/frontend/.env.local)
 
-NEXT_PUBLIC_API_URL=http://localhost:5000
+- NEXT_PUBLIC_API_URL=YOUR_BACKEND_URL
 
 Backend (/backend/.env)
 
-PORT=5000
-MONGO_URI=your_mongodb_atlas_connection
-JWT_SECRET=your_secret_key
+- PORT=PORT_NUMBER
+- MONGO_URI=YOUR_MONGODB_URL
+- JWT_SECRET=your_jwt_secret
+- SMS_PROVIDER_URL=YOUR_SMS_PROVIDER_URL
+- SMS_API_KEY=YOUR_SMS_API_KEY
 
 
 📌 Features
@@ -65,7 +67,7 @@ JWT_SECRET=your_secret_key
 
 📊 Live match data & odds
 
-🎨 Responsive UI with Tailwind & Chakra
+🎨 Responsive UI with Tailwind & Shad-cn
 
 🗄️ MongoDB Atlas for scalable storage
 
