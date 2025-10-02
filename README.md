@@ -10,7 +10,7 @@ It provides users with a seamless betting experience, real-time interactions, an
 ### Frontend
 - [Next.js](https://nextjs.org/) – React framework for SSR & SSG
 - [Tailwind CSS](https://tailwindcss.com/) – Styling
-- [Chakra UI](https://chakra-ui.com/) – UI components
+- [Shad-cn](https://chakra-ui.com/) – UI components
 - [Axios](https://axios-http.com/) – API requests
 - [Socket.IO Client](https://socket.io/) – Real-time updates
 
@@ -32,9 +32,9 @@ azmera-bet/
 
 2. Frontend Setup
 
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- npm run dev
 
 
 3. Backend setup
