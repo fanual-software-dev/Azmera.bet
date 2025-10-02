@@ -24,7 +24,7 @@ It provides users with a seamless betting experience, real-time interactions, an
 ---
 
 
----
+
 
 ## 📂 Project Structure
 
@@ -64,7 +64,7 @@ Backend (/backend/.env)
 ---
 
 
----
+
 
 
 📌 Features
