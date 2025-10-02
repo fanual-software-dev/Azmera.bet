@@ -23,6 +23,9 @@ It provides users with a seamless betting experience, real-time interactions, an
 
 ---
 
+
+---
+
 ## 📂 Project Structure
 
 azmera-bet/
@@ -58,6 +61,11 @@ Backend (/backend/.env)
 - SMS_PROVIDER_URL=YOUR_SMS_PROVIDER_URL
 - SMS_API_KEY=YOUR_SMS_API_KEY
 
+---
+
+
+---
+
 
 📌 Features
 
@@ -70,6 +78,9 @@ Backend (/backend/.env)
 🎨 Responsive UI with Tailwind & Shad-cn
 
 🗄️ MongoDB Atlas for scalable storage
+
+
+---
 
 
 👨‍💻 Author
