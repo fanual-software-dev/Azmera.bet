@@ -6,6 +6,15 @@ export class User extends Document {
   @Prop({ required: true })
   fullName: string;
 
+  @Prop()
+  bio: string;
+
+  @Prop({ unique: true})
+  userName: string;
+
+  @Prop()
+  profilePicture: string; 
+
   @Prop({ default: "player", enum: [ "admin", "player" ] })
   role: string;
 

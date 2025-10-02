@@ -18,4 +18,9 @@ export class AuthController {
         return this.authService.login(body)
         
     }
+
+    @Post('/verify')
+    async verify(@Body() body:{ phoneNumber: string, verificationCode: string }){
+        return this.authService.verify(body)
+    }
 }
