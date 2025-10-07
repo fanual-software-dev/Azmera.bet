@@ -1,16 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import {  Document } from 'mongoose';
 
-@Schema()
+
+@Schema({timestamps: true})
 export class User extends Document {
   @Prop({ required: true })
   fullName: string;
 
   @Prop()
   bio: string;
-
-  @Prop({ unique: true})
-  userName: string;
 
   @Prop()
   profilePicture: string; 
@@ -27,6 +25,15 @@ export class User extends Document {
   @Prop({ default: "none" })
   verificationCode: string;
 
+  @Prop({ default: "none" })
+  resetPasswordCode: string;
+
+  @Prop( {default: false} )
+  resetPasswordRequested: boolean
+
+  @Prop({ default: 'none' })
+  refreshToken: string;
+
   @Prop({ default: false })
   isVerified: boolean
 
@@ -35,12 +42,6 @@ export class User extends Document {
   
   @Prop({ default: 0, max: 400000 })
   dailyWin: number;
-
-  @Prop()
-  created_at: Date;   // will be auto-filled
-
-  @Prop()
-  last_updated: Date; // will be auto-updated
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
