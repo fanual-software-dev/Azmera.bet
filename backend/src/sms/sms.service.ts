@@ -20,7 +20,7 @@ export class SmsService {
 
   constructor(private readonly httpService: HttpService, @InjectModel(User.name) private userModel: Model<User>) {}
 
-  async sendSms(data: Partial<User>) {
+  async sendSms(data: Partial<User>, smsType:string) {
 
     if (!data.phoneNumber) {
       throw new BadRequestException("Phone number is required to send verification code");
@@ -40,11 +40,12 @@ export class SmsService {
 
     this.logger.log(url,apiKey,companyNumber,verificationCode,identifierID)
 
-    if ( ! url || !apiKey || !companyNumber || !verificationCode || !identifierID ) {
+    if ( ! url || !apiKey || !companyNumber || !verificationCode || !identifierID || !smsType ) {
       throw new InternalServerErrorException("Some env properties were not found")
     }
 
     try {
+      const message = `Your Azmera Bet ${smsType} code is: ${verificationCode}. This code will expire in 5 minutes. Do not share it with anyone.`
       const response = await firstValueFrom(
         this.httpService
           .post(
@@ -52,7 +53,7 @@ export class SmsService {
             {
               from: identifierID,
               to: data.phoneNumber,
-              message: `"Your Azmera Bet verification code is: ${verificationCode}. This code will expire in 5 minutes. Do not share it with anyone."`,
+              message,
               callback:""
              
              
@@ -69,15 +70,18 @@ export class SmsService {
 
     //   this.logger.log(`SMS sent to ${data.phoneNumber}: ${response.data}`);
       if (response.data.acknowledge){
-        this.userModel.updateOne({ phoneNumber: data.phoneNumber }, { verificationCode: verificationCode }).exec();
+        
+        if (smsType==='verification') this.userModel.updateOne({ phoneNumber: data.phoneNumber }, { verificationCode: verificationCode }).exec();
+        else if (smsType==="reset-password") this.userModel.updateOne({ phoneNumber: data.phoneNumber }, { resetPasswordCode: verificationCode, resetPasswordRequested: true }).exec();
+
         return { message: 'SMS sent successfully', verificationCode: verificationCode }; // Return the code for testing purposes
       }
-      
-      throw new Error('SMS provider did not acknowledge the request');
+
+      return new Error('SMS provider did not acknowledge the request');
 
     } catch (error) {
       this.logger.error(`Failed to send SMS: ${error.message}`);
-      throw new Error('SMS sending failed');
+      return new Error('SMS sending failed');
     }
   }
 }

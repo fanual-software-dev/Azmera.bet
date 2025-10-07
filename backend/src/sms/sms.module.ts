@@ -8,7 +8,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [HttpModule, MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),],
   providers: [SmsService],
-  controllers: [SmsController]
+  controllers: [SmsController],
+  exports: [SmsService]
 })
 export class SmsModule {
 

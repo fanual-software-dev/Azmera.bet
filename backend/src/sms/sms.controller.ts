@@ -8,7 +8,7 @@ export class SmsController {
     @Post('/send')
     async create(@Body() body: { phoneNumber : string } ){
         
-        return this.smsService.sendSms(body);
+        return this.smsService.sendSms(body,'verification');
         
     }
 }
