@@ -8,11 +8,14 @@ import { VerifyDto } from './dto/verify.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LogoutDTO } from './dto/logout.dto';
 import { NewAccessTokenDTO } from './dto/new-access-token.dto';
+import { Public } from './public.decorator';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @Public()
     @Post('/register')
     @ApiOperation({ summary: 'Register a new user' })
     @ApiResponse({ status: 201, description: 'User successfully registered.' })
@@ -23,6 +26,7 @@ export class AuthController {
 
     }
 
+    @Public()
     @Post('/login')
     @ApiOperation({ summary: 'Login a user' })
     @ApiResponse({ status: 200, description: 'User successfully logged in.' })
@@ -33,6 +37,7 @@ export class AuthController {
         
     }
 
+    @Public()
     @Post('/logout')
     @ApiOperation({ summary: 'Logout a user' })
     @ApiResponse({ status: 200, description: 'User successfully logged out.' })
@@ -41,6 +46,7 @@ export class AuthController {
         return this.authService.logout(body.phoneNumber, body.refreshToken)
     }
 
+    @Public()
     @Post('access-token')
     @ApiOperation({ summary: 'Generate a new access token using refresh token' })
     @ApiResponse({ status: 200, description: 'New access token generated successfully.' })
@@ -49,6 +55,7 @@ export class AuthController {
         return this.authService.generateNewAccessToken(body.phoneNumber, body.refreshToken);
     }
 
+    @Public()
     @Post('/verify')
     @ApiOperation({ summary: 'Verify phone number with code' })
     @ApiQuery({ name: 'verificationType', required: false, example: 'verification', description: 'Type of verification (e.g. verification, reset-password)' })
@@ -59,6 +66,7 @@ export class AuthController {
         return this.authService.verify(body, verificationType)
     }
 
+    @Public()
     @Post('/forgot-password')
     @ApiOperation({ summary: 'Request a password reset' })
     @ApiResponse({ status: 200, description: 'Password reset code sent via SMS.' })
@@ -66,6 +74,8 @@ export class AuthController {
         return this.authService.forgotPassword(body)
     }
 
+
+    @Public()
     @Post('/reset-password')
     @ApiOperation({ summary: 'Reset password with verification code' })
     @ApiResponse({ status: 200, description: 'Password successfully reset.' })
