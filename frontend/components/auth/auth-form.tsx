@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { div } from "framer-motion/client";
+
 
 type AuthFormProps = {
   type: "login" | "signup" | "forgotPassword" | "verify";
@@ -26,25 +26,6 @@ export default function AuthForm({ type }: AuthFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: integrate with backend (Nest.js)
-    const response = await fetch("https://api.afromessage.com/api/send",{
-      method: "POST",
-      body: JSON.stringify({
-              from: "e80ad9d8-adf3-463f-80f4-7c4b39f7f164",
-              sender: "+251940646657",
-              to: "+251965168741",
-              message: `"Your Azmera Bet verification code is: ${100010}. This code will expire in 5 minutes. Do not share it with anyone."`,
-              callback:""
-             
-             
-            }),
-      headers:{
-        "Authorization": `Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZGVudGlmaWVyIjoiVUt0UEhrTm5zQjlvVUx4YVBwQ1BwRTQ5OEFqM0t3YVgiLCJleHAiOjE5MTcwMjU2ODgsImlhdCI6MTc1OTI1OTI4OCwianRpIjoiMDFjY2U5YWEtMWM4ZC00ODgzLWE2NTUtMjA2NGEzYjgxMGExIn0.a5w4vhUBglUGdIlsMv28ogSS8ChOXklLPxjY3Eqqk4k`
-      }
-    })
-
-    console.log("here is the response body", response)
-    setTimeout(() => setLoading(false), 2000);
   };
 
   return (
@@ -59,7 +40,7 @@ export default function AuthForm({ type }: AuthFormProps) {
       {type === "signup" && (
         <Input placeholder="Full Name" className="bg-white/1 border my-2  shadow-md shadow-white/15 placeholder:text-white placeholder:italic placeholder:text-xs" />
       )}
-      <Input placeholder="Email" type="email" className="bg-white/1 my-2 border shadow-md shadow-white/15 placeholder:text-white placeholder:italic placeholder:text-xs" />
+      <Input placeholder="+251-xxx-xxx-xxx" type="phone" className="bg-white/1 my-2 border shadow-md shadow-white/15 placeholder:text-white placeholder:italic placeholder:text-xs" />
       <div className="relative w-full flex items-center">
         <Input placeholder="Password" type={`${eyesOpen.password ? "text": "password"}`} className="bg-white/1 my-2 border shadow-md shadow-white/15 placeholder:text-white placeholder:italic placeholder:text-xs" />
         <div className="absolute right-2">
