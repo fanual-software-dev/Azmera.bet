@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/users/user.schema';
@@ -23,21 +23,19 @@ export class AuthService {
         private readonly JWTService: JwtService
     ) {}
 
-    // async checkUserExists(phoneNumber: string, password: string) {
+    async generateTokens(payload: { userId: string; phoneNumber: string }) {
+        const access_token = await this.JWTService.signAsync(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+        });
 
-    //     const user = await this.userModel.findOne({ phoneNumber });
-    //     if (!user) {
-    //         return new NotFoundException('User not found');
-    //     }
+        const refresh_token = await this.JWTService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+        });
 
-    //     const isPasswordValid = await bcrypt.compare(password, user.password);
-        
-    //     if (!isPasswordValid) {
-    //         return new BadRequestException('Invalid password');
-    //     }
-
-    //     return user;
-    // }
+        return { access_token, refresh_token };
+    }
     
     
     async create(data: Partial<User>) {
@@ -114,24 +112,28 @@ export class AuthService {
     async generateNewAccessToken( phoneNumber: string , refreshToken: string) {
 
         try {
-            
-            const user = await this.userModel.findOne({ phoneNumber: phoneNumber })
-
-            if (!user || user.refreshToken !== refreshToken) {
-                return new BadRequestException("Invalid phone number or refresh token.")
-            }
-
-            const payload = { sub: user._id, phoneNumber: user.phoneNumber };
-
-            const newAccessToken = this.JWTService.sign(payload, {
-                secret: process.env.JWT_ACCESS_SECRET,
-                expiresIn: '15m'
+           
+            const payload = await this.JWTService.verifyAsync(refreshToken, {
+                secret: process.env.JWT_REFRESH_SECRET,
             });
 
-            return { accessToken: newAccessToken, refreshToken: user.refreshToken }
+            // optionally check if user still exists
+            const user = await this.userModel.findById(payload.userId);
+            if (!user) throw new UnauthorizedException('User not found');
 
-        } catch (error) {
-            return new InternalServerErrorException('Internal server error')
+            // generate new access + refresh
+            const newTokens =  await this.generateTokens({
+                userId: user._id as string,
+                phoneNumber: user.phoneNumber,
+            });
+
+            user.refreshToken = newTokens.refresh_token;
+            await user.save();
+
+            return newTokens;
+
+        } catch (err) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
         }
     }
 

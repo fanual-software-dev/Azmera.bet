@@ -47,7 +47,7 @@ export class AuthController {
     }
 
     @Public()
-    @Post('access-token')
+    @Post('refresh')
     @ApiOperation({ summary: 'Generate a new access token using refresh token' })
     @ApiResponse({ status: 200, description: 'New access token generated successfully.' })
     @ApiResponse({ status: 401, description: 'Unauthorized. Invalid refresh token.' })
