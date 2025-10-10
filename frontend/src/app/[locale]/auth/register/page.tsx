@@ -1,10 +1,6 @@
-
-import AuthForm from "@/components/auth/auth-form";
+'use client';
+import Signup from "@/components/auth/Register";
 
 export default function SignupPage() {
-  return (
-    <div className="absolute z-50 min-h-screen flex items-center justify-center">
-          <AuthForm type="signup" />
-    </div>
-  )
+  return <Signup/>
 }
