@@ -13,6 +13,8 @@ It provides users with a seamless betting experience, real-time interactions, an
 - [Shad-cn](https://ui.shadcn.com/) – UI components
 - [Axios](https://axios-http.com/) – API requests
 - [Socket.IO Client](https://socket.io/) – Real-time updates
+- [React-Hook-Form](https://react-hook-form.com/) - Form handling
+- [Zod](https://zod.dev/) - Form validation
 
 ### Backend
 - [Nest.js](https://nestjs.com/) – Scalable Node.js framework
