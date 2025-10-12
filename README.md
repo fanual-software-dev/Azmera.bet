@@ -1,7 +1,7 @@
 # 🎰 Azmera Bet
 
 Azmera Bet is a modern betting platform built with **Next.js** for the frontend and **Nest.js** for the backend.  
-It provides users with a seamless betting experience, real-time interactions, and secure backend services.
+It provides users with a seamless betting experience, real-time interactions, fast payment methods and secure backend services.
 
 ---
 
