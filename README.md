@@ -22,6 +22,7 @@ It provides users with a seamless betting experience, real-time interactions, fa
 - [Mongoose](https://mongoosejs.com/) – ODM
 - [Socket.IO](https://socket.io/) – Real-time communication
 - [JWT](https://jwt.io/) – Authentication
+- [Arif pay](https://arifpay.net/) – Local payment gateway
 
 ---
 
