@@ -1,126 +1,86 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { AuthLayout } from "./AuthLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
-const signupSchema = z
-  .object({
-    fullName: z.string().min(3, "Full name is required"),
-    phoneNumber: z.string().min(9, "Phone number is required"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    terms: z.boolean().refine((v) => v, "You must accept the Terms"),
-    privacy: z.boolean().refine((v) => v, "You must accept the Privacy Policy"),
-    updates: z.boolean().optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
 
-type SignupFormValues = z.infer<typeof signupSchema>;
+
 
 export default function Signup() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignupFormValues>({
-    resolver: zodResolver(signupSchema),
-  });
 
-  const onSubmit = async (data: SignupFormValues) => {
-    console.log("Signup data", data);
-    // TODO: call signup API
-  };
+  const { register, handleSubmit, watch, formState:{ errors, isSubmitting } } = useForm({
+    defaultValues:{
+      fullName:"",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: ""
+    }
+  })
+
+  const onSubmit = (data:unknown)=>{
+    console.log(data)
+  }
+
+  
 
   return (
-    <AuthLayout title="Create Your Account" description="Join Azmera Bet today">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <AuthLayout title="Create Your Account" description="Register and be part of the team">
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <Input
-          placeholder="Full Name"
-          {...register("fullName")}
-          disabled={isSubmitting}
+          placeholder="Type your name"
+          className={`${errors.fullName ? "border-red-500": ""}`}
+          {...register("fullName", { required: "Full Name is required", minLength:{ value:3, message:"Name should be atleast 3 charachters long" } })}
         />
-        {errors.fullName && (
-          <p className="text-red-500 text-xs italic">{errors.fullName.message}</p>
-        )}
+        { errors.fullName && <p className="text-xs text-red-500 italic font-medium">{errors.fullName.message}</p> }
 
         <Input
-          placeholder="Phone Number"
-          {...register("phoneNumber")}
-          disabled={isSubmitting}
+          placeholder="Phone number"
+          className={`${errors.phoneNumber ? "border-red-500": ""}`}
+          {...register("phoneNumber", { required: "Phone number is required", minLength:{ value:10, message:"Phone number should be atleast 10 characters long" } })}
         />
-        {errors.phoneNumber && (
-          <p className="text-red-500 text-xs italic">{errors.phoneNumber.message}</p>
-        )}
+        { errors.phoneNumber && <p className="text-xs text-red-500 italic font-medium">{errors.phoneNumber.message}</p> }
 
         <Input
-          type="password"
           placeholder="Password"
-          {...register("password")}
-          disabled={isSubmitting}
+          className={`${errors.password ? "border-red-500": ""}`}
+          {...register("password", { required: "Password is required", minLength:{ value:6, message:"Password should be atleast 6 characters long" } })}
         />
-        {errors.password && (
-          <p className="text-red-500 text-xs italic">{errors.password.message}</p>
-        )}
+        { errors.password && <p className="text-xs text-red-500 italic font-medium">{errors.password.message}</p> }
 
         <Input
-          type="password"
           placeholder="Confirm Password"
-          {...register("confirmPassword")}
-          disabled={isSubmitting}
+          className={`${errors.confirmPassword ? "border-red-500": ""}`}
+          {...register("confirmPassword", { required: "Confirm password is required"})}
         />
-        {errors.confirmPassword && (
-          <p className="text-red-500 text-xs italic">
-            {errors.confirmPassword.message}
-          </p>
-        )}
+        { errors.confirmPassword && <p className="text-xs text-red-500 italic font-medium">{errors.confirmPassword.message}</p> }
 
-        {/* Terms checkboxes */}
-        <div className="space-y-2">
-          <label className="flex items-center space-x-2">
-            <Checkbox {...register("terms")} />
-            <span className="text-sm">
-              I agree to the{" "}
-              <Link href="/terms" className="text-blue-600 underline">
-                Terms and Conditions
-              </Link>
-            </span>
-          </label>
-
-          <label className="flex items-center space-x-2">
-            <Checkbox {...register("privacy")} />
-            <span className="text-sm">
-              I accept the{" "}
-              <Link href="/privacy" className="text-blue-600 underline">
-                Privacy Policy
-              </Link>
-            </span>
-          </label>
-
-          <label className="flex items-center space-x-2">
-            <Checkbox {...register("updates")} />
-            <span className="text-sm">Send me updates and news</span>
-          </label>
-        </div>
-
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : "Sign Up"}
-        </Button>
-
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Already have an account?{" "}
-          <Link href="/auth/login" className="text-blue-600 font-medium">
-            Login
-          </Link>
-        </p>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="
+          bg-sky-600 bg-[linear-gradient(to_top,orange_0%,orange_100%)] bg-[length:0%_100%] 
+            bg-no-repeat 
+            bg-top
+            transition-[background-size] 
+            duration-500 
+            ease-in-out 
+            hover:bg-[length:100%_100%]  
+            text-white 
+            font-[Poppins] 
+            cursor-pointer 
+            p-2 
+            text-center 
+            w-full 
+            rounded-lg"
+        >
+          { isSubmitting ? <span className="loading loading-spinner loading-xl"></span> : "Register"}
+          
+        </button>
       </form>
     </AuthLayout>
   );
