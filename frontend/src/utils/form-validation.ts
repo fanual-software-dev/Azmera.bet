@@ -10,11 +10,24 @@ export const userSchema = zod.object({
 
 })
 
+export const checkboxSchema = zod.object({
+    privacy: zod.boolean().default(false),
+    terms: zod.boolean().default(false),
+    
+}).refine((data) => data.terms && data.privacy, {
+    message: "You must agree to all terms and privacy rules",
+    path: ["privacy"], // error will appear under the first checkbox
+  });
+
+export type checkbox = zod.infer<typeof checkboxSchema>;
+
 export type User = zod.infer<typeof userSchema>;
 
 export const loginSchema = userSchema.pick({phoneNumber: true, password: true});
 export const signupSchema = userSchema.pick({fullName: true, phoneNumber: true, password: true, confirmPassword: true}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match"});
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
+});
 export const forgotPasswordSchema = userSchema.pick({phoneNumber: true});
 export const verifySchema = userSchema.pick({phone: true, verificationCode: true});
 export const resetPasswordSchema = userSchema.pick({phone: true, password: true, confirmPassword: true}).refine((data) => data.password === data.confirmPassword, {

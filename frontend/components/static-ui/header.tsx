@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button';
 import AuthForm from '../auth/auth-form';
 import {  X } from 'lucide-react';
+import Signup from '../auth/Register';
+import Login from '../auth/Login';
+import AuthLayout from '@/src/app/[locale]/auth/layout';
 
 type conditions = 'signup' | 'login' | 'none'
 
@@ -44,10 +47,13 @@ const Header = () => {
 
         {
             conditionalRenderer!=="none" && 
-            <div className="fixed backdrop-blur-3xl z-50  opacity-[98%] w-full min-h-screen flex py-8 justify-center">
+            <div className="fixed backdrop-blur-3xl z-50  opacity-[98%] w-full overflow-y-auto h-screen flex  justify-center">
                 <div className='relative'>
-                    <AuthForm type={conditionalRenderer} />
-                    <X onClick={()=>setConditionalRenderer("none")} size={20} className='absolute top-3 right-3 cursor-pointer text-white'/>
+                    <AuthLayout>
+                      {conditionalRenderer==="signup" ? <Signup/> : <Login/>}
+                    </AuthLayout>
+                    
+                    <X onClick={()=>setConditionalRenderer("none")} size={20} className='absolute top-8 right-8 cursor-pointer text-black'/>
                 </div>
             </div>
         }
