@@ -1,63 +1,123 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
 import { AuthLayout } from "./AuthLayout";
+import { signupSchema, User, checkbox, checkboxSchema } from "@/src/utils/form-validation";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
+import { authapi } from "@/src/utils/api";
 
 
+
+
+
+const formSchema = signupSchema.merge(checkboxSchema)
+type formFileds = Omit<User, "verificationCode" | "refreshToken"> & checkbox
 
 export default function Signup() {
 
-  const { register, handleSubmit, watch, formState:{ errors, isSubmitting } } = useForm({
-    defaultValues:{
-      fullName:"",
-      phoneNumber: "",
-      password: "",
-      confirmPassword: ""
-    }
+  const { 
+    register, 
+    handleSubmit,
+    setError, 
+    formState:{ 
+      errors, isSubmitting, isSubmitSuccessful 
+    } } = useForm<formFileds>({
+    resolver: zodResolver(formSchema)
+    
   })
 
-  const onSubmit = (data:unknown)=>{
-    console.log(data)
+  const onSubmit : SubmitHandler<formFileds> = async (data:formFileds)=>{
+    try {
+      const res = await authapi('register',data)
+      // console.log(res.data.message,"here is the res.data")
+      if ( res.status===201 && res.data.status!==400){
+        console.log(res.data,"created successfully")   
+      }
+
+      else{
+        
+        setError("root",{
+          message: String(res.data.message)
+        })
+      }
+    
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setError("root",{
+        message
+      })
+    }
   }
 
   
 
   return (
-    <AuthLayout title="Create Your Account" description="Register and be part of the team">
+    <AuthLayout 
+      title="Create Your Account" 
+      description="Join Azmera Bet today"
+    >
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Type your name"
           className={`${errors.fullName ? "border-red-500": ""}`}
-          {...register("fullName", { required: "Full Name is required", minLength:{ value:3, message:"Name should be atleast 3 charachters long" } })}
+          {...register("fullName")}
         />
         { errors.fullName && <p className="text-xs text-red-500 italic font-medium">{errors.fullName.message}</p> }
 
         <Input
           placeholder="Phone number"
           className={`${errors.phoneNumber ? "border-red-500": ""}`}
-          {...register("phoneNumber", { required: "Phone number is required", minLength:{ value:10, message:"Phone number should be atleast 10 characters long" } })}
+          {...register("phoneNumber")}
         />
         { errors.phoneNumber && <p className="text-xs text-red-500 italic font-medium">{errors.phoneNumber.message}</p> }
 
         <Input
           placeholder="Password"
           className={`${errors.password ? "border-red-500": ""}`}
-          {...register("password", { required: "Password is required", minLength:{ value:6, message:"Password should be atleast 6 characters long" } })}
+          {...register("password")}
         />
         { errors.password && <p className="text-xs text-red-500 italic font-medium">{errors.password.message}</p> }
 
         <Input
           placeholder="Confirm Password"
           className={`${errors.confirmPassword ? "border-red-500": ""}`}
-          {...register("confirmPassword", { required: "Confirm password is required"})}
+          {...register("confirmPassword")}
         />
         { errors.confirmPassword && <p className="text-xs text-red-500 italic font-medium">{errors.confirmPassword.message}</p> }
+
+        <div className="space-y-2">
+          <label className="flex items-center space-x-2">
+            <Checkbox {...register("terms", {
+                setValueAs: (v) => !!v,
+              })} 
+            />
+            <span className="text-sm">
+              I agree to the{" "}
+              <Link href="/terms" className="text-blue-600 underline">
+                Terms and Conditions
+              </Link>
+            </span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <Checkbox {...register("privacy", {
+                setValueAs: (v) => !!v,
+              })} 
+            />
+            <span className="text-sm">
+              I accept the{" "}
+              <Link href="/privacy" className="text-blue-600 underline">
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
+
+          { errors.privacy && <p className="text-xs text-red-500 italic font-medium">{errors.privacy.message}</p> }
+        </div>
 
         <button
           type="submit"
@@ -76,11 +136,13 @@ export default function Signup() {
             p-2 
             text-center 
             w-full 
-            rounded-lg"
+            rounded-lg
+          "
         >
           { isSubmitting ? <span className="loading loading-spinner loading-xl"></span> : "Register"}
           
         </button>
+        { errors.root && <p className="text-xs text-red-500 italic font-medium">{errors.root.message}</p> }
       </form>
     </AuthLayout>
   );
